@@ -15,14 +15,14 @@
         .popup-content button {
             margin-top: 5px;
             padding: 4px 8px;
-            background-color: #007bff;
+            background-color: #6f42c1; /* Purple */
             color: white;
             border: none;
             cursor: pointer;
             border-radius: 4px;
         }
         .popup-content button:hover {
-            background-color: #0056b3;
+            background-color: #5936a2; /* Darker purple on hover */
         }
     </style>
 </head>
@@ -32,8 +32,8 @@
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-    // Initialize the map centered over the Eastern Mediterranean
-    var map = L.map('map').setView([41.0, 20.0], 4);
+    // Initialize the map centered on Venice
+    var map = L.map('map').setView([45.4408, 12.3155], 7);
 
     // Base map layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -91,7 +91,7 @@
     // Story popups
     var storySteps = [
         {
-            coords: [41, 20],
+            coords: [45.4408, 12.3155],
             content: "<div class='popup-content'><strong>Welcome to Venice's world!</strong><br>You are about to explore the Venetian Republic, its trade routes, and the journey of St. Mark's relics.<br><button onclick='nextPopup()'>Next</button></div>"
         },
         {
@@ -115,17 +115,29 @@
         if(currentPopup) {
             map.closePopup(currentPopup);
         }
+
         if(currentStep < storySteps.length) {
             var step = storySteps[currentStep];
-            currentPopup = L.popup({maxWidth: 300})
-                .setLatLng(step.coords)
-                .setContent(step.content)
-                .openOn(map);
+
+            // Smooth pan and zoom
+            map.flyTo(step.coords, 7, {
+                animate: true,
+                duration: 2
+            });
+
+            // Show popup after fly animation
+            setTimeout(function() {
+                currentPopup = L.popup({maxWidth: 300})
+                    .setLatLng(step.coords)
+                    .setContent(step.content)
+                    .openOn(map);
+            }, 2000);
+
             currentStep++;
         }
     }
 
-    // Start the story
+    // Start the story at Venice
     window.onload = function() {
         nextPopup();
     };
