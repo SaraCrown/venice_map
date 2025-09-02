@@ -113,11 +113,11 @@
         },
         {
             coords: [41.0082, 28.9784],
-            content: "<div class='popup-content'><b>The City of Treasures</b><br>Fast forward a few centuries: Venice joins the Fourth Crusade, and suddenly the city is raining treasures. Golden icons, mosaics, and marble columns make the long trip from Constantinople to Venice. It’s like Venice got the ultimate medieval IKEA delivery—only instead of furniture, it’s priceless relics and sparkling Byzantine art.<br><button onclick='nextPopup()'>Next</button></div>"
+            content: "<div class='popup-content'><b>The City of Treasures</b><br>Fast forward a few centuries: Venice joins the Fourth Crusade, and suddenly the city is raining treasures. Golden icons, mosaics, and marble columns make the long trip from Constantinople to Venice. It’s like Venice got the ultimate medieval IKEA delivery—only instead of furniture, it’s priceless relics and sparkling Byzantine art.<br><div class='popup-buttons'><button onclick='nextPopup()'>Next</button><button onclick='speakText(this)'>Play</button></div></div>"
         },
         {
             coords: [45.4408, 12.3155],
-            content: "<div class='popup-content'><b>Where Treasures Landed</b><br>The journey ends here, in the canals of Venice. Relics, spices, silks, and art transformed the city into a hub of wealth, faith, and culture. St. Mark’s Basilica glitters with Byzantine icons and mosaics, each a testament to the daring voyages and bold ambition that made Venice the “Queen of the Adriatic“.<br><button onclick='nextPopup()'>End</button></div>"
+            content: "<div class='popup-content'><b>Where Treasures Landed</b><br>The journey ends here, in the canals of Venice. Relics, spices, silks, and art transformed the city into a hub of wealth, faith, and culture. St. Mark’s Basilica glitters with Byzantine icons and mosaics, each a testament to the daring voyages and bold ambition that made Venice the “Queen of the Adriatic“.<br><div class='popup-buttons'><button onclick='nextPopup()'>End</button><button onclick='speakText(this)'>Play</button></div></div>"
         }
     ];
 
@@ -149,7 +149,12 @@
             currentStep++;
         }
     }
-
+// Text-to-speech function
+    function speakText(button) {
+        var popupContent = button.closest('.popup-content').innerText;
+        var utterance = new SpeechSynthesisUtterance(popupContent);
+        window.speechSynthesis.speak(utterance);
+    }
     // Start the story at Venice
     window.onload = function() {
         nextPopup();
