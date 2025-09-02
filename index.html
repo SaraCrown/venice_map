@@ -53,25 +53,15 @@
 
     // Byzantine Empire Polygon
     var byzantinePolygon = L.polygon([
-       [12.0, 37.0],
-    [15.0, 39.0],
-    [18.0, 41.0],
-    [20.0, 43.0],
-    [23.0, 44.0],
-    [27.0, 44.5],
-    [32.0, 43.5],
-    [37.0, 41.5],
-    [39.0, 38.0],
-    [37.0, 35.0],
-    [34.0, 33.0],
-    [33.0, 31.0],
-    [30.0, 30.0],
-    [26.0, 31.0],
-    [22.0, 34.0],
-    [20.0, 36.0],
-    [18.0, 38.0],
-    [15.0, 38.0],
-    [12.0, 37.0]
+        [42.5, 19.0], // Northern Greece (Macedonia)
+    [41.0, 21.0], // Central Greece
+    [39.5, 22.0], // Southern Greece
+    [37.5, 23.0], // Aegean coast
+    [36.0, 25.0], // Southwestern Anatolia
+    [37.0, 30.0], // Central Anatolia
+    [39.0, 33.0], // Eastern Anatolia
+    [41.0, 29.0], // Constantinople / Istanbul
+    [42.5, 19.0]  // back to start
     ], {color: 'purple', fillOpacity: 0.2}).bindPopup("<div class='story-popup'><strong>Byzantine Empire (c. 1200)</strong><br>The Byzantine Empire ruled the Eastern Mediterranean and the Balkans, linking Europe and Asia through trade, armies, and ideas. Merchants, diplomats, and adventurers flocked to the city, and many of its treasures—icons, mosaics, and marble columns—soon sailed to Venice, inspiring its art, faith, and ambition. Today these lands are Turkey, Greece, and Bulgaria, but in 1200, Byzantium set the gold standard for wealth, power, and legendary style.</div>");
     byzantineLayer.addLayer(byzantinePolygon);
 
