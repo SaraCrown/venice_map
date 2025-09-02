@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Venetian Trade Routes Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <style>
+        body, html { margin:0; padding:0; height:100%; }
+        #map { width: 100%; height: 100%; }
+        .intro-popup { font-family: Arial, sans-serif; font-size: 14px; }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    // Initialize the map and fit bounds to include all main locations
+    var map = L.map('map');
+    var bounds = [
+        [31.2, 12.3],  // Alexandria SW
+        [46, 29]       // Northern edge of Byzantine polygon NE
+    ];
+    map.fitBounds(bounds);
+
+    // Base map layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Intro popup over Venice
+    setTimeout(function() {
+        L.popup({maxWidth: 300})
+            .setLatLng([45.4408, 12.3155])
+            .setContent("<div class='intro-popup'><strong>Welcome to Venice's world!</strong><br>Explore the Venetian Republic, its trade routes, and the journey of St. Mark's relics. Click the pins to learn more.</div>")
+            .openOn(map);
+    }, 500);
+
+    // Layer groups
+    var venetianLayer = L.layerGroup();
+    var byzantineLayer = L.layerGroup();
+    var tradeRoutesLayer = L.layerGroup();
+
+    // Venetian Republic Polygon
+    var venetianPolygon = L.polygon([
+        [46, 12], [45, 13], [43, 14], [41, 13], [42, 12]
+    ], {color: 'blue', fillOpacity: 0.2}).bindPopup("Venetian Republic at its height");
+    venetianLayer.addLayer(venetianPolygon);
+
+    // Byzantine Empire Polygon
+    var byzantinePolygon = L.polygon([
+        [43, 26], [42, 28], [41, 29], [40, 27], [41, 26]
+    ], {color: 'purple', fillOpacity: 0.2}).bindPopup("Byzantine Empire around 1200 AD");
+    byzantineLayer.addLayer(byzantinePolygon);
+
+    // Markers
+    var venice = L.marker([45.4408, 12.3155]).bindPopup("<b>Venice</b><br>The hub of merchants and faith. Treasures and relics flowed to St. Mark’s.");
+    var constantinople = L.marker([41.0082, 28.9784]).bindPopup("<b>Constantinople</b><br>The gateway to the East. Many mosaics and relics arrived here after 1204.");
+    var crete = L.marker([35.3387, 25.1442]).bindPopup("<b>Crete</b><br>Venice’s prized colony — source of goods and culture.");
+    var alexandria = L.marker([31.2001, 29.9187]).bindPopup("<b>Alexandria</b><br>Starting point of St. Mark's relics journey to Venice.");
+
+    venetianLayer.addLayer(venice);
+    venetianLayer.addLayer(constantinople);
+    venetianLayer.addLayer(crete);
+    venetianLayer.addLayer(alexandria);
+
+    // Trade routes as polylines
+    var route1 = L.polyline([[45.4408, 12.3155],[41.0082, 28.9784]], {color:'orange'}).bindPopup("Trade route: Venice → Constantinople");
+    var route2 = L.polyline([[45.4408, 12.3155],[35.3387, 25.1442]], {color:'orange'}).bindPopup("Trade route: Venice → Crete");
+    var route3 = L.polyline([[35.3387, 25.1442],[31.2001, 29.9187]], {color:'orange'}).bindPopup("Trade route: Crete → Alexandria");
+    tradeRoutesLayer.addLayer(route1);
+    tradeRoutesLayer.addLayer(route2);
+    tradeRoutesLayer.addLayer(route3);
+
+    // Add default layers
+    venetianLayer.addTo(map);
+    byzantineLayer.addTo(map);
+    tradeRoutesLayer.addTo(map);
+
+    // Layer control
+    L.control.layers(null, {
+        "Venetian Republic": venetianLayer,
+        "Byzantine Empire": byzantineLayer,
+        "Trade Routes": tradeRoutesLayer
+    }).addTo(map);
+
+</script>
+</body>
+</html>
