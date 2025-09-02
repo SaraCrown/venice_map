@@ -46,20 +46,19 @@
     var tradeRoutesLayer = L.layerGroup();
 
     // Venetian Republic Polygon
-  var venetianRepublic = L.multiPolygon([
-    // Mainland & Dalmatian coast
-    [
-        [46.5, 12.5], // Northeast Italy
-        [45.0, 13.0], // Venice lagoon
-        [43.5, 14.0], // Northern Adriatic coast
-        [42.0, 13.0], // Dalmatian coast
-        [46.5, 12.5]  // back to start
+   var venetianPolygon = L.polygon([
+         [46.5, 12.5], // Northeast Italy (Alps / Veneto)
+    [45.5, 13.0], // Venice lagoon
+    [44.0, 13.5], // Northern Adriatic coast
+    [42.5, 14.0], // Dalmatian coast (Zadar area)
+    [42.0, 13.0], // Southern Adriatic coast
+    [46.5, 12.5] 
     ], {color: 'blue', fillOpacity: 0.2}).bindPopup("<div class='story-popup'><strong>Venetian Republic (c. 1300–1500)</strong><br>At its height, Venice was a hub of trade and art, with ships sailing across the Mediterranean carrying treasures, mosaics, and relics to St. Mark’s Basilica. What began as a small lagoon city grew into a maritime powerhouse, controlling the Adriatic and stretching into today’s Italy, Greece, Crete, and Cyprus. Venice didn’t just trade—it shaped the Mediterranean.</div>");
     venetianLayer.addLayer(venetianPolygon);
 
     // Byzantine Empire Polygon
     var byzantinePolygon = L.polygon([
-        [41.0, 28.0], [40.0, 30.0], [37.0, 32.0], [36.0, 26.0], [38.0, 23.0], [40.0, 22.0], [42.0, 24.0], [43.0, 26.0]
+        [41.0, 26.0], [40.0, 30.0], [37.0, 32.0], [36.0, 26.0], [38.0, 23.0], [40.0, 22.0], [42.0, 24.0], [43.0, 26.0]
     ], {color: 'purple', fillOpacity: 0.2}).bindPopup("<div class='story-popup'><strong>Byzantine Empire (c. 1200)</strong><br>The Byzantine Empire ruled the Eastern Mediterranean and the Balkans, linking Europe and Asia through trade, armies, and ideas. Merchants, diplomats, and adventurers flocked to the city, and many of its treasures—icons, mosaics, and marble columns—soon sailed to Venice, inspiring its art, faith, and ambition. Today these lands are Turkey, Greece, and Bulgaria, but in 1200, Byzantium set the gold standard for wealth, power, and legendary style.</div>");
     byzantineLayer.addLayer(byzantinePolygon);
 
