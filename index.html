@@ -1,15 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
     <title>Venetian Trade Routes Map</title>
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <style>
-        body, html { margin:0; padding:0; height:100%; }
-        #map { width: 100%; height: 100%; }
-        .story-popup { font-family: Arial, sans-serif; font-size: 14px; line-height: 1.4; }
+        #map { height: 100vh; width: 100%; }
+        .popup-content {
+            font-family: 'Arial', sans-serif;
+            font-size: 14px;
+        }
+        .popup-content button {
+            margin-top: 5px;
+            padding: 4px 8px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .popup-content button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -18,26 +32,13 @@
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-    // Initialize the map and fit bounds to include all main locations
-    var map = L.map('map');
-    var bounds = [
-        [31.2, 12.3],  // Alexandria SW
-        [46, 29]       // Northern edge of Byzantine polygon NE
-    ];
-    map.fitBounds(bounds);
+    // Initialize the map centered over the Eastern Mediterranean
+    var map = L.map('map').setView([41.0, 20.0], 4);
 
     // Base map layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
-
-    // Intro popup
-    setTimeout(function() {
-        L.popup({maxWidth: 300})
-            .setLatLng([45.4408, 12.3155])
-            .setContent("<div class='story-popup'><strong>Welcome to Venice’s world!</strong><br>Explore the Venetian Republic, its trade routes, and the journey of St. Mark’s relics. Click the pins to read their stories.</div>")
-            .openOn(map);
-    }, 500);
 
     // Layer groups
     var venetianLayer = L.layerGroup();
@@ -47,35 +48,30 @@
     // Venetian Republic Polygon
     var venetianPolygon = L.polygon([
         [46, 12], [45, 13], [43, 14], [41, 13], [42, 12]
-    ], {color: 'blue', fillOpacity: 0.2})
-    .bindPopup("<div class='story-popup'><strong>Venetian Republic</strong><br>At its height, Venice was a hub of trade and art. Ships sailed across the Mediterranean, bringing treasures, mosaics, and relics to enrich St. Mark’s Basilica.</div>");
+    ], {color: 'blue', fillOpacity: 0.2}).bindPopup("<div class='story-popup'><strong>Venetian Republic</strong><br>At its height, Venice was a hub of trade and art. Ships sailed across the Mediterranean, bringing treasures, mosaics, and relics to enrich St. Mark’s Basilica.</div>");
     venetianLayer.addLayer(venetianPolygon);
 
     // Byzantine Empire Polygon
     var byzantinePolygon = L.polygon([
         [43, 26], [42, 28], [41, 29], [40, 27], [41, 26]
-    ], {color: 'purple', fillOpacity: 0.2})
-    .bindPopup("<div class='story-popup'><strong>Byzantine Empire</strong><br>Venice’s relationship with the Byzantine Empire shaped its art and architecture. Many mosaics and relics in St. Mark’s Basilica came from this empire, especially after the Fourth Crusade in 1204.</div>");
+    ], {color: 'purple', fillOpacity: 0.2}).bindPopup("Byzantine Empire around 1200 AD");
     byzantineLayer.addLayer(byzantinePolygon);
 
-    // Markers with guided narrative
-    var venice = L.marker([45.4408, 12.3155]).bindPopup("<div class='story-popup'><strong>Venice</strong><br>The Queen of the Adriatic. Venice grew rich from trade, connecting East and West, and became the home of St. Mark’s relics and treasures.</div>");
-    var constantinople = L.marker([41.0082, 28.9784]).bindPopup("<div class='story-popup'><strong>Constantinople</strong><br>The gateway to the East. In 1204, treasures, mosaics, and the Horses of St. Mark arrived in Venice after the conquest of the city.</div>");
-    var crete = L.marker([35.3387, 25.1442]).bindPopup("<div class='story-popup'><strong>Crete</strong><br>Venice’s prized colony supplied goods, culture, and wealth, feeding the bustling mercantile empire that adorned St. Mark’s Basilica.</div>");
-    var alexandria = L.marker([31.2001, 29.9187]).bindPopup("<div class='story-popup'><strong>Alexandria</strong><br>Where St. Mark’s relics began their journey. Two Venetian merchants secretly transported them to Venice in 828, ensuring the city gained its patron saint.</div>");
+    // Pins
+    var venice = L.marker([45.4408, 12.3155]).bindPopup("<b>Venice</b><br>The Queen of the Adriatic, hub of merchants and faith. Treasures and relics flowed to St. Mark’s.");
+    var constantinople = L.marker([41.0082, 28.9784]).bindPopup("<b>Constantinople</b><br>The gateway to the East. After 1204, many mosaics, relics, and the Horses of St. Mark arrived here.");
+    var crete = L.marker([35.3387, 25.1442]).bindPopup("<b>Crete</b><br>Venice’s prized colony — source of food, wine, and culture.");
+    var alexandria = L.marker([31.2001, 29.9187]).bindPopup("<b>Alexandria</b><br>Where St. Mark's relics began their journey to Venice.");
 
     venetianLayer.addLayer(venice);
     venetianLayer.addLayer(constantinople);
     venetianLayer.addLayer(crete);
     venetianLayer.addLayer(alexandria);
 
-    // Trade routes as polylines with story
-    var route1 = L.polyline([[45.4408, 12.3155],[41.0082, 28.9784]], {color:'orange'})
-        .bindPopup("<div class='story-popup'><strong>Trade Route: Venice → Constantinople</strong><br>Merchants transported precious relics and art from the Byzantine capital to Venice.</div>");
-    var route2 = L.polyline([[45.4408, 12.3155],[35.3387, 25.1442]], {color:'orange'})
-        .bindPopup("<div class='story-popup'><strong>Trade Route: Venice → Crete</strong><br>Crete provided food, wine, and cultural influence to Venice’s thriving republic.</div>");
-    var route3 = L.polyline([[35.3387, 25.1442],[31.2001, 29.9187]], {color:'orange'})
-        .bindPopup("<div class='story-popup'><strong>Trade Route: Crete → Alexandria</strong><br>This route connected Venice’s colonies to the wider Mediterranean, facilitating commerce and exploration.</div>");
+    // Trade routes
+    var route1 = L.polyline([[45.4408, 12.3155],[41.0082, 28.9784]], {color:'orange'}).bindPopup("Trade route: Venice → Constantinople");
+    var route2 = L.polyline([[45.4408, 12.3155],[35.3387, 25.1442]], {color:'orange'}).bindPopup("Trade route: Venice → Crete");
+    var route3 = L.polyline([[35.3387, 25.1442],[31.2001, 29.9187]], {color:'orange'}).bindPopup("Trade route: Crete → Alexandria");
     tradeRoutesLayer.addLayer(route1);
     tradeRoutesLayer.addLayer(route2);
     tradeRoutesLayer.addLayer(route3);
@@ -92,6 +88,47 @@
         "Trade Routes": tradeRoutesLayer
     }).addTo(map);
 
+    // Story popups
+    var storySteps = [
+        {
+            coords: [41, 20],
+            content: "<div class='popup-content'><strong>Welcome to Venice's world!</strong><br>You are about to explore the Venetian Republic, its trade routes, and the journey of St. Mark's relics.<br><button onclick='nextPopup()'>Next</button></div>"
+        },
+        {
+            coords: [31.2001, 29.9187],
+            content: "<div class='popup-content'><b>Alexandria</b><br>Where St. Mark's relics began their journey to Venice.<br><button onclick='nextPopup()'>Next</button></div>"
+        },
+        {
+            coords: [41.0082, 28.9784],
+            content: "<div class='popup-content'><b>Constantinople</b><br>The gateway to the East. Treasures, mosaics, and the Horses of St. Mark arrived here after 1204.<br><button onclick='nextPopup()'>Next</button></div>"
+        },
+        {
+            coords: [45.4408, 12.3155],
+            content: "<div class='popup-content'><b>Venice</b><br>The Queen of the Adriatic. St. Mark's Basilica awaits!<br><button onclick='nextPopup()'>End</button></div>"
+        }
+    ];
+
+    var currentStep = 0;
+    var currentPopup;
+
+    function nextPopup() {
+        if(currentPopup) {
+            map.closePopup(currentPopup);
+        }
+        if(currentStep < storySteps.length) {
+            var step = storySteps[currentStep];
+            currentPopup = L.popup({maxWidth: 300})
+                .setLatLng(step.coords)
+                .setContent(step.content)
+                .openOn(map);
+            currentStep++;
+        }
+    }
+
+    // Start the story
+    window.onload = function() {
+        nextPopup();
+    };
 </script>
 </body>
 </html>
