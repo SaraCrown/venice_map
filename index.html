@@ -97,29 +97,63 @@
     }).addTo(map);
 
     // Story popups
-    var storySteps = [
-        {
-            coords: [45.4408, 12.3155],
-            content: "<div class='popup-content'><b>Ready to explore Venetian trading routes?</b><br>Step into a world of adventure, faith, and ambition—where spices, silks, and sacred relics sailed from Alexandria and Constantinople to Venice. Follow their journeys and discover how the city became a treasure trove of history.<br><button onclick='nextPopup()'>Next</button><button onclick='toggleSpeech(this)'>Play</button></div></div>"
-        },
-{
-            coords: [45.4408, 12.3155],
-            content: "<div class='popup-content'><b>Building an Empire</b><br>In the 14th and 15th centuries, Venice ruled the waves. Stretching along the Adriatic and reaching into Greece, Crete, and Cyprus, Venice wasn’t just a city—it was a maritime powerhouse. Palaces, ports, and fleets dotted the Mediterranean, and every canal in Venice hummed with trade, diplomacy, and intrigue.<br><button onclick='nextPopup()'>Next</button><button onclick='toggleSpeech(this)'>Play</button></div></div>"
-        },
-        
-        {
-            coords: [31.2001, 29.9187],
-            content: "<div class='popup-content'><b>Key Trade Routes to the East</b><br>Spices, silks, and rare papyrus sailed from Alexandria’s bustling ports to Venice. Aromatic cinnamon, vibrant dyes, and delicate textiles carried tales of distant lands—and made Venetian markets sparkle with the exotic. Every crate tells a story of adventure, trade, and discovery.<br><button onclick='nextPopup()'>Next</button><button onclick='toggleSpeech(this)'>Play</button></div></div>"
-        },
-        {
-            coords: [41.0082, 28.9784],
-            content: "<div class='popup-content'><b>The City of Treasures</b><br>Fast forward a few centuries: Venice joins the Fourth Crusade, and suddenly the city is raining treasures. Golden icons, mosaics, and marble columns make the long trip from Constantinople to Venice. It’s like Venice got the ultimate medieval IKEA delivery—only instead of furniture, it’s priceless relics and sparkling Byzantine art.<br><div class='popup-buttons'><button onclick='nextPopup()'>Next</button><button onclick='toggleSpeech(this)'>Play</button></div></div>"
-        },
-        {
-            coords: [45.4408, 12.3155],
-            content: "<div class='popup-content'><b>Where Treasures Landed</b><br>The journey ends here, in the canals of Venice. Relics, spices, silks, and art transformed the city into a hub of wealth, faith, and culture. St. Mark’s Basilica glitters with Byzantine icons and mosaics, each a testament to the daring voyages and bold ambition that made Venice the “Queen of the Adriatic“.<br><div class='popup-buttons'><button onclick='nextPopup()'>End</button><button onclick='toggleSpeech(this)'>Play</button></div></div>"
-        }
-    ];
+var storySteps = [
+    {
+        coords: [45.4408, 12.3155],
+        content: `<div class='popup-content'>
+                    <b>Ready to explore Venetian trading routes?</b><br>
+                    Step into a world of adventure, faith, and ambition—where spices, silks, and sacred relics sailed from Alexandria and Constantinople to Venice. Follow their journeys and discover how the city became a treasure trove of history.<br>
+                    <div class='popup-buttons'>
+                        <button onclick='nextPopup()'>Next</button>
+                        <button onclick='toggleSpeech(this)'>Play</button>
+                    </div>
+                  </div>`
+    },
+    {
+        coords: [45.4408, 12.3155],
+        content: `<div class='popup-content'>
+                    <b>Building an Empire</b><br>
+                    In the 14th and 15th centuries, Venice ruled the waves. Stretching along the Adriatic and reaching into Greece, Crete, and Cyprus, Venice wasn’t just a city—it was a maritime powerhouse. Palaces, ports, and fleets dotted the Mediterranean, and every canal in Venice hummed with trade, diplomacy, and intrigue.<br>
+                    <div class='popup-buttons'>
+                        <button onclick='nextPopup()'>Next</button>
+                        <button onclick='toggleSpeech(this)'>Play</button>
+                    </div>
+                  </div>`
+    },
+    {
+        coords: [31.2001, 29.9187],
+        content: `<div class='popup-content'>
+                    <b>Key Trade Routes to the East</b><br>
+                    Spices, silks, and rare papyrus sailed from Alexandria’s bustling ports to Venice. Aromatic cinnamon, vibrant dyes, and delicate textiles carried tales of distant lands—and made Venetian markets sparkle with the exotic. Every crate tells a story of adventure, trade, and discovery.<br>
+                    <div class='popup-buttons'>
+                        <button onclick='nextPopup()'>Next</button>
+                        <button onclick='toggleSpeech(this)'>Play</button>
+                    </div>
+                  </div>`
+    },
+    {
+        coords: [41.0082, 28.9784],
+        content: `<div class='popup-content'>
+                    <b>The City of Treasures</b><br>
+                    Fast forward a few centuries: Venice joins the Fourth Crusade, and suddenly the city is raining treasures. Golden icons, mosaics, and marble columns make the long trip from Constantinople to Venice. It’s like Venice got the ultimate medieval IKEA delivery—only instead of furniture, it’s priceless relics and sparkling Byzantine art.<br>
+                    <div class='popup-buttons'>
+                        <button onclick='nextPopup()'>Next</button>
+                        <button onclick='toggleSpeech(this)'>Play</button>
+                    </div>
+                  </div>`
+    },
+    {
+        coords: [45.4408, 12.3155],
+        content: `<div class='popup-content'>
+                    <b>Where Treasures Landed</b><br>
+                    The journey ends here, in the canals of Venice. Relics, spices, silks, and art transformed the city into a hub of wealth, faith, and culture. St. Mark’s Basilica glitters with Byzantine icons and mosaics, each a testament to the daring voyages and bold ambition that made Venice the “Queen of the Adriatic“.<br>
+                    <div class='popup-buttons'>
+                        <button onclick='nextPopup()'>End</button>
+                        <button onclick='toggleSpeech(this)'>Play</button>
+                    </div>
+                  </div>`
+    }
+];
 
     var currentStep = 0;
     var currentPopup;
