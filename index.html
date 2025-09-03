@@ -108,55 +108,69 @@
     ], {color: 'purple', fillOpacity: 0.2}).bindPopup("<div class='story-popup'><strong>Byzantine Empire (c. 1200)</strong><br>The Byzantine Empire ruled the Eastern Mediterranean and the Balkans, linking Europe and Asia through trade, armies, and ideas. Merchants, diplomats, and adventurers flocked to the city, and many of its treasures—icons, mosaics, and marble columns—soon sailed to Venice, inspiring its art, faith, and ambition. Today these lands are Turkey, Greece, and Bulgaria, but in 1200, Byzantium set the gold standard for wealth, power, and legendary style.</div>");
     byzantineLayer.addLayer(byzantinePolygon);
 
-    // =======================
-    // Pins with animated route
-    // =======================
-    var venice = L.marker([45.4408, 12.3155]).bindPopup("<b>Venice</b><br>The Queen of the Adriatic, hub of merchants and faith. Treasures and relics flowed to St. Mark’s.");
+// =======================
+// Pins with animated route
+// =======================
 
-    var pins = [
-        L.marker([41.0082, 28.9784]).bindPopup("<b>Constantinople</b><br>The gateway to the East. After 1204, many mosaics, relics, and the Horses of St. Mark arrived here."),
-        L.marker([35.3387, 25.1442]).bindPopup("<b>Crete</b><br>Venice’s prized colony — source of food, wine, and culture."),
-        L.marker([31.2001, 29.9187]).bindPopup("<b>Alexandria</b><br>Where St. Mark's relics began their journey to Venice."),
-        L.marker([39.6243, 19.9217]).bindPopup("<b>Corfu</b><br>Venice’s first foothold in the Ionian Sea—fortress island and key supply stop."),
-        L.marker([35.1856, 33.3823]).bindPopup("<b>Cyprus</b><br>Linked Venice to Levantine trade routes, supplying sugar, timber, and spices."),
-        L.marker([42.6507, 18.0944]).bindPopup("<b>Ragusa (Dubrovnik)</b><br>This city thrived as a trading republic in Venice’s shadow. Grain, salt, and Balkan silver passed through its walls."),
-        L.marker([36.8186, 21.7046]).bindPopup("<b>Modon</b><br>‘The Eye of the Republic,’ Venice’s fortress guarding the route to Alexandria and Constantinople."),
-        L.marker([38.4634, 23.6025]).bindPopup("<b>Negroponte (Chalkis)</b><br>Venice’s gateway to the Aegean, guarded the sea lanes toward Constantinople and the Black Sea."),
-        L.marker([36.2021, 36.1600]).bindPopup("<b>Antioch</b><br>A key Levantine port where Eastern spices and silks flowed into Venetian hands, fueling wealth across the Mediterranean."),
-        L.marker([41.0053, 39.7220]).bindPopup("<b>Trebizond</b><br>Trebizond, the last Byzantine outpost on the Silk Road, funneled silks and spices from Asia into Venetian markets.")
-    ];
+// Function to create a colored circle marker
+function createPin(lat, lng, popupContent) {
+    return L.circleMarker([lat, lng], {
+        color: "#574EA0",      // border color
+        fillColor: "#574EA0",  // fill color
+        fillOpacity: 1,
+        radius: 8               // size of the pin
+    }).bindPopup(popupContent);
+}
 
-    venetianLayer.addLayer(venice);
-    pins.forEach(pin => {
-        venetianLayer.addLayer(pin);
+// Venice marker
+var venice = createPin(45.4408, 12.3155, "<b>Venice</b><br>The Queen of the Adriatic, hub of merchants and faith. Treasures and relics flowed to St. Mark’s.");
 
-        pin.on("click", function() {
+var pins = [
+    createPin(41.0082, 28.9784, "<b>Constantinople</b><br>The gateway to the East. After 1204, many mosaics, relics, and the Horses of St. Mark arrived here."),
+    createPin(35.3387, 25.1442, "<b>Crete</b><br>Venice’s prized colony — source of food, wine, and culture."),
+    createPin(31.2001, 29.9187, "<b>Alexandria</b><br>Where St. Mark's relics began their journey to Venice."),
+    createPin(39.6243, 19.9217, "<b>Corfu</b><br>Venice’s first foothold in the Ionian Sea—fortress island and key supply stop."),
+    createPin(35.1856, 33.3823, "<b>Cyprus</b><br>Linked Venice to Levantine trade routes, supplying sugar, timber, and spices."),
+    createPin(42.6507, 18.0944, "<b>Ragusa (Dubrovnik)</b><br>This city thrived as a trading republic in Venice’s shadow. Grain, salt, and Balkan silver passed through its walls."),
+    createPin(36.8186, 21.7046, "<b>Modon</b><br>‘The Eye of the Republic,’ Venice’s fortress guarding the route to Alexandria and Constantinople."),
+    createPin(38.4634, 23.6025, "<b>Negroponte (Chalkis)</b><br>Venice’s gateway to the Aegean, guarded the sea lanes toward Constantinople and the Black Sea."),
+    createPin(36.2021, 36.1600, "<b>Antioch</b><br>A key Levantine port where Eastern spices and silks flowed into Venetian hands, fueling wealth across the Mediterranean."),
+    createPin(41.0053, 39.7220, "<b>Trebizond</b><br>Trebizond, the last Byzantine outpost on the Silk Road, funneled silks and spices from Asia into Venetian markets.")
+];
+
+venetianLayer.addLayer(venice);
+
+pins.forEach(pin => {
+    venetianLayer.addLayer(pin);
+
+    pin.on("click", function() {
+        if (currentRoute) map.removeLayer(currentRoute);
+
+        var start = pin.getLatLng();
+        var end = venice.getLatLng();
+        var latlngs = [start];
+
+        var steps = 100;
+        var i = 0;
+        function animateLine() {
+            i++;
+            var lat = start.lat + (end.lat - start.lat) * (i / steps);
+            var lng = start.lng + (end.lng - start.lng) * (i / steps);
+            latlngs.push([lat, lng]);
+
             if (currentRoute) map.removeLayer(currentRoute);
+            currentRoute = L.polyline(latlngs, {color: "#DABC38"}).addTo(map);
 
-            var start = pin.getLatLng();
-            var end = venice.getLatLng();
-            var latlngs = [start];
-
-            var steps = 100;
-            var i = 0;
-            function animateLine() {
-                i++;
-                var lat = start.lat + (end.lat - start.lat) * (i / steps);
-                var lng = start.lng + (end.lng - start.lng) * (i / steps);
-                latlngs.push([lat, lng]);
-
-                if (currentRoute) map.removeLayer(currentRoute);
-                currentRoute = L.polyline(latlngs, {color: "gold"}).addTo(map);
-
-                if (i < steps) {
-                    requestAnimationFrame(animateLine);
-                }
+            if (i < steps) {
+                requestAnimationFrame(animateLine);
             }
-            animateLine();
-        });
+        }
+        animateLine();
     });
+});
 
-    var currentRoute = null;
+var currentRoute = null;
+
 
     // Add default layers
     venetianLayer.addTo(map);
