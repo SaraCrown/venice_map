@@ -101,31 +101,61 @@
 // =======================
 // Pins with animated route
 // =======================
- // Pins
-    var venice = L.marker([45.4408, 12.3155]).bindPopup("<b>Venice</b><br>The Queen of the Adriatic, hub of merchants and faith. Treasures and relics flowed to St. Mark’s.");
-    var constantinople = L.marker([41.0082, 28.9784]).bindPopup("<b>Constantinople</b><br>The gateway to the East. After 1204, many mosaics, relics, and the Horses of St. Mark arrived here.");
-    var crete = L.marker([35.3387, 25.1442]).bindPopup("<b>Crete</b><br>Venice’s prized colony — source of food, wine, and culture.");
-    var alexandria = L.marker([31.2001, 29.9187]).bindPopup("<b>Alexandria</b><br>Where St. Mark's relics began their journey to Venice.");
-    var corfu = L.marker([39.6243, 19.9217]).bindPopup("<b>Corfu</b><br>Venice’s first foothold in the Ionian Sea—fortress island and key supply stop.");
-    var cyprus = L.marker([35.1856, 33.3823]).bindPopup("<b>Cyprus</b><br>Linked Venice to Levantine trade routes, supplying sugar, timber, and spices.");
-    var ragusa = L.marker([42.6507, 18.0944]).bindPopup("<b>Ragusa (Dubrovnik)</b><br>This city thrived as a trading republic in Venice’s shadow. Grain, salt, and Balkan silver passed through its walls.");
-    var modon = L.marker([36.8186, 21.7046]).bindPopup("<b>Modon</b><br>‘The Eye of the Republic,’ Venice’s fortress guarding the route to Alexandria and Constantinople.");
-    var negroponte = L.marker([38.4634, 23.6025]).bindPopup("<b>Negroponte (Chalkis)</b><br>Venice’s gateway to the Aegean, guarded the sea lanes toward Constantinople and the Black Sea.");
-    var antioch = L.marker([36.2021, 36.1600]).bindPopup("<b>Antioch</b><br>A key Levantine port where Eastern spices and silks flowed into Venetian hands, fueling wealth across the Mediterranean.");
-    var trebizond = L.marker([41.0053, 39.7220]).bindPopup("<b>Trebizond</b><br>Trebizond, the last Byzantine outpost on the Silk Road, funneled silks and spices from Asia into Venetian markets.");
+var venice = L.marker([45.4408, 12.3155]).bindPopup("<b>Venice</b><br>The Queen of the Adriatic, hub of merchants and faith. Treasures and relics flowed to St. Mark’s.");
 
+// List of other pins with popups
+var pins = [
+    { marker: L.marker([41.0082, 28.9784]).bindPopup("<b>Constantinople</b><br>The gateway to the East. After 1204, many mosaics, relics, and the Horses of St. Mark arrived here."), name: "Constantinople" },
+    { marker: L.marker([35.3387, 25.1442]).bindPopup("<b>Crete</b><br>Venice’s prized colony — source of food, wine, and culture."), name: "Crete" },
+    { marker: L.marker([31.2001, 29.9187]).bindPopup("<b>Alexandria</b><br>Where St. Mark's relics began their journey to Venice."), name: "Alexandria" },
+    { marker: L.marker([39.6243, 19.9217]).bindPopup("<b>Corfu</b><br>Venice’s first foothold in the Ionian Sea—fortress island and key supply stop."), name: "Corfu" },
+    { marker: L.marker([35.1856, 33.3823]).bindPopup("<b>Cyprus</b><br>Linked Venice to Levantine trade routes, supplying sugar, timber, and spices."), name: "Cyprus" },
+    { marker: L.marker([42.6507, 18.0944]).bindPopup("<b>Ragusa (Dubrovnik)</b><br>This city thrived as a trading republic in Venice’s shadow. Grain, salt, and Balkan silver passed through its walls."), name: "Ragusa" },
+    { marker: L.marker([36.8186, 21.7046]).bindPopup("<b>Modon</b><br>‘The Eye of the Republic,’ Venice’s fortress guarding the route to Alexandria and Constantinople."), name: "Modon" },
+    { marker: L.marker([38.4634, 23.6025]).bindPopup("<b>Negroponte (Chalkis)</b><br>Venice’s gateway to the Aegean, guarded the sea lanes toward Constantinople and the Black Sea."), name: "Negroponte" },
+    { marker: L.marker([36.2021, 36.1600]).bindPopup("<b>Antioch</b><br>A key Levantine port where Eastern spices and silks flowed into Venetian hands, fueling wealth across the Mediterranean."), name: "Antioch" },
+    { marker: L.marker([41.0053, 39.7220]).bindPopup("<b>Trebizond</b><br>Trebizond, the last Byzantine outpost on the Silk Road, funneled silks and spices from Asia into Venetian markets."), name: "Trebizond" }
+];
 
-    venetianLayer.addLayer(venice);
-    venetianLayer.addLayer(constantinople);
-    venetianLayer.addLayer(crete);
-    venetianLayer.addLayer(alexandria);
-    venetianLayer.addLayer(corfu);
-    venetianLayer.addLayer(cyprus);
-    venetianLayer.addLayer(ragusa);
-    venetianLayer.addLayer(modon);
-    venetianLayer.addLayer(negroponte);
-    venetianLayer.addLayer(antioch);
-    venetianLayer.addLayer(trebizond);
+// Add Venice marker
+venetianLayer.addLayer(venice);
+
+// Add other pins and animation
+pins.forEach(function(p) {
+    venetianLayer.addLayer(p.marker);
+
+    p.marker.on('click', function() {
+        var startCoords = p.marker.getLatLng();
+        var veniceCoords = venice.getLatLng();
+
+        // Remove previous animated route if exists
+        if (window.currentRoute) {
+            map.removeLayer(window.currentRoute);
+        }
+
+        // Generate simple line points for animation
+        var steps = 50;
+        var latStep = (veniceCoords.lat - startCoords.lat) / steps;
+        var lngStep = (veniceCoords.lng - startCoords.lng) / steps;
+        var lineCoords = [startCoords];
+        var stepCount = 0;
+
+        var animatedLine = L.polyline([startCoords], { color: 'orange', weight: 4 }).addTo(map);
+
+        var interval = setInterval(function() {
+            stepCount++;
+            if (stepCount > steps) {
+                clearInterval(interval);
+                window.currentRoute = animatedLine; // save reference
+            } else {
+                var nextLat = startCoords.lat + latStep * stepCount;
+                var nextLng = startCoords.lng + lngStep * stepCount;
+                lineCoords.push([nextLat, nextLng]);
+                animatedLine.setLatLngs(lineCoords);
+            }
+        }, 15); // animation speed
+    });
+});
 
 
     // Add default layers
