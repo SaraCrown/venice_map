@@ -251,66 +251,78 @@
         }
     }
 
-    // ========================
-    // Text-to-Speech
-    // ========================
-    var voices = [];
-    var preferredVoiceNames = [
-        "Samantha", // iOS English (US) female
-  "Alex",     // iOS English (US) male
-  "Google US English",
-  "Google UK English Female",
-  "Google UK English Male",
-  "Microsoft David Desktop - English (United States)",
-  "Microsoft Zira Desktop - English (United States)"
-    ];
+ // ========================
+// Better Web Speech Setup
+// ========================
+let voices = [];
+let preferredVoiceNames = [
+    "Samantha",                  // iOS Safari English (US)
+    "Google US English",         // Chrome
+    "Google UK English Female",  // Chrome alt
+    "Microsoft Zira Desktop - English (United States)",
+    "Microsoft David Desktop - English (United States)"
+];
 
-    function loadVoices() {
-        voices = window.speechSynthesis.getVoices();
-        if (voices.length === 0) {
-            setTimeout(loadVoices, 100);
-        }
+function loadVoices() {
+    voices = window.speechSynthesis.getVoices();
+    if (voices.length === 0) {
+        // Retry until voices are ready
+        setTimeout(loadVoices, 200);
+        return;
     }
-    loadVoices();
-    window.speechSynthesis.onvoiceschanged = loadVoices;
+    console.log("Voices loaded:", voices.map(v => v.name + " (" + v.lang + ")"));
+}
+window.speechSynthesis.onvoiceschanged = loadVoices;
+loadVoices();
 
-    var currentUtterance = null;
+let currentUtterance = null;
 
-    function toggleSpeech(button) {
-        if (currentUtterance && window.speechSynthesis.speaking) {
-            window.speechSynthesis.cancel();
-            button.textContent = "Play";
-            currentUtterance = null;
-            return;
-        }
-
-        var popupContent = button.closest('.popup-content').innerText
-            .replace("Play", "")
-            .replace("Next", "")
-            .replace("End", "")
-            .trim();
-        if (!popupContent) return;
-
-        currentUtterance = new SpeechSynthesisUtterance(popupContent);
-
-        if (voices.length > 0) {
-            let voice = voices.find(v => preferredVoiceNames.includes(v.name));
-            currentUtterance.voice = voice || voices[0];
-        }
-
-        currentUtterance.rate = 0.9;
-        currentUtterance.pitch = 1.05;
-        currentUtterance.volume = 1;
-
-        window.speechSynthesis.speak(currentUtterance);
-        button.textContent = "Pause";
-
-        currentUtterance.onend = function() {
-            button.textContent = "Play";
-            currentUtterance = null;
-        };
+function toggleSpeech(button) {
+    if (currentUtterance && window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        button.textContent = "Play";
+        currentUtterance = null;
+        return;
     }
 
+    // Get popup text
+    let popupContent = button.closest('.popup-content').innerText
+        .replace("Play", "")
+        .replace("Next", "")
+        .replace("End", "")
+        .trim();
+
+    if (!popupContent) return;
+
+    currentUtterance = new SpeechSynthesisUtterance(popupContent);
+
+    // Force English voice if possible
+    if (voices.length > 0) {
+        let voice = voices.find(v => preferredVoiceNames.includes(v.name));
+        if (!voice) {
+            // fallback: pick the first English voice found
+            voice = voices.find(v => v.lang.startsWith("en"));
+        }
+        if (voice) currentUtterance.voice = voice;
+    }
+
+    // Natural adjustments
+    currentUtterance.rate = 0.9;     // slightly slower
+    currentUtterance.pitch = 1.0;    // normal pitch (avoid robot feel)
+    currentUtterance.volume = 1.0;   // full volume
+
+    // Add small pauses for commas/periods
+    currentUtterance.text = popupContent.replace(/,/g, ", ").replace(/\./g, ". ");
+
+    // Start speaking
+    window.speechSynthesis.speak(currentUtterance);
+    button.textContent = "Pause";
+
+    currentUtterance.onend = () => {
+        button.textContent = "Play";
+        currentUtterance = null;
+    };
+}
     // Start the story at Venice
     window.onload = function() {
         nextPopup();
