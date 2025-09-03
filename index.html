@@ -1,72 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Venetian Trade Routes Map</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <style>
+        #map { height: 100vh; width: 100%; }
+        .popup-content {
+            font-family: 'Arial', sans-serif;
+            font-size: 14px;
+        }
+        .popup-content button {
+            margin-top: 5px;
+            padding: 4px 8px;
+            background-color: #DABC38;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .popup-content button:hover {
+            background-color: #574EA0;
+        }
+        #top-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 10000;
+            background: rgba(87, 78, 160, 0.95);
+            padding: 10px 0;
+            font-family: Arial, sans-serif;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        #top-banner .banner-logo {
+            max-height: 80px;
+            display: block;
+            margin: 0 auto 8px auto;
+        }
+        #top-banner .banner-text {
+            font-size: 16px;
+            color: white;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+
+<div id="top-banner">
+    <img src="https://www.crowntours.com/wp-content/uploads/2024/09/Nav.png" alt="Crown Tours Logo" class="banner-logo">
+    <div class="banner-text">
+        Discover Venice’s rich trading history.
+    </div>
+</div>
+<div id="page-footer">
+  Keep exploring the Venetian trade routes — search the map and click the interactive pins.
+</div>
+
+<style>
+  #page-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    color: #574EA0; /* purple */
+    text-align: center;
+    padding: 12px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+    z-index: 10000;
+  }
+</style>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    // Initialize the map centered on Venice
+    var map = L.map('map').setView([45.4408, 12.3155], 7);
+
+    // Base map layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Layer groups
+    var venetianLayer = L.layerGroup();
+    var byzantineLayer = L.layerGroup();
+
+    // Venetian Republic Polygon
+    var venetianPolygon = L.polygon([
+        [46, 12], [45, 13], [43, 14], [41, 13], [42, 12]
+    ], {color: 'blue', fillOpacity: 0.2}).bindPopup("<div class='story-popup'><strong>Venetian Republic (c. 1300–1500)</strong><br>At its height, Venice was a hub of trade and art, with ships sailing across the Mediterranean carrying treasures, mosaics, and relics to St. Mark’s Basilica. What began as a small lagoon city grew into a maritime powerhouse, controlling the Adriatic and stretching into today’s Italy, Greece, Crete, and Cyprus. Venice didn’t just trade—it shaped the Mediterranean.</div>");
+    venetianLayer.addLayer(venetianPolygon);
+
+    // Byzantine Empire Polygon
+    var byzantinePolygon = L.polygon([
+        [42.5, 19.0], [41.0, 21.0], [39.5, 22.0],
+        [37.5, 23.0], [36.0, 25.0], [37.0, 30.0],
+        [39.0, 33.0], [41.0, 29.0], [42.5, 19.0]
+    ], {color: 'purple', fillOpacity: 0.2}).bindPopup("<div class='story-popup'><strong>Byzantine Empire (c. 1200)</strong><br>The Byzantine Empire ruled the Eastern Mediterranean and the Balkans, linking Europe and Asia through trade, armies, and ideas. Merchants, diplomats, and adventurers flocked to the city, and many of its treasures—icons, mosaics, and marble columns—soon sailed to Venice, inspiring its art, faith, and ambition. Today these lands are Turkey, Greece, and Bulgaria, but in 1200, Byzantium set the gold standard for wealth, power, and legendary style.</div>");
+    byzantineLayer.addLayer(byzantinePolygon);
+
+    // =======================
+    // Pins with animated route
+    // =======================
+    var venice = L.marker([45.4408, 12.3155]).bindPopup("<b>Venice</b><br>The Queen of the Adriatic, hub of merchants and faith. Treasures and relics flowed to St. Mark’s.");
+
+    var pins = [
+        L.marker([41.0082, 28.9784]).bindPopup("<b>Constantinople</b><br>The gateway to the East. After 1204, many mosaics, relics, and the Horses of St. Mark arrived here."),
+        L.marker([35.3387, 25.1442]).bindPopup("<b>Crete</b><br>Venice’s prized colony — source of food, wine, and culture."),
+        L.marker([31.2001, 29.9187]).bindPopup("<b>Alexandria</b><br>Where St. Mark's relics began their journey to Venice."),
+        L.marker([39.6243, 19.9217]).bindPopup("<b>Corfu</b><br>Venice’s first foothold in the Ionian Sea—fortress island and key supply stop."),
+        L.marker([35.1856, 33.3823]).bindPopup("<b>Cyprus</b><br>Linked Venice to Levantine trade routes, supplying sugar, timber, and spices."),
+        L.marker([42.6507, 18.0944]).bindPopup("<b>Ragusa (Dubrovnik)</b><br>This city thrived as a trading republic in Venice’s shadow. Grain, salt, and Balkan silver passed through its walls."),
+        L.marker([36.8186, 21.7046]).bindPopup("<b>Modon</b><br>‘The Eye of the Republic,’ Venice’s fortress guarding the route to Alexandria and Constantinople."),
+        L.marker([38.4634, 23.6025]).bindPopup("<b>Negroponte (Chalkis)</b><br>Venice’s gateway to the Aegean, guarded the sea lanes toward Constantinople and the Black Sea."),
+        L.marker([36.2021, 36.1600]).bindPopup("<b>Antioch</b><br>A key Levantine port where Eastern spices and silks flowed into Venetian hands, fueling wealth across the Mediterranean."),
+        L.marker([41.0053, 39.7220]).bindPopup("<b>Trebizond</b><br>Trebizond, the last Byzantine outpost on the Silk Road, funneled silks and spices from Asia into Venetian markets.")
+    ];
+
+    venetianLayer.addLayer(venice);
+    pins.forEach(pin => {
+        venetianLayer.addLayer(pin);
+
+        pin.on("click", function() {
+            if (currentRoute) map.removeLayer(currentRoute);
+
+            var start = pin.getLatLng();
+            var end = venice.getLatLng();
+            var latlngs = [start];
+
+            var steps = 100;
+            var i = 0;
+            function animateLine() {
+                i++;
+                var lat = start.lat + (end.lat - start.lat) * (i / steps);
+                var lng = start.lng + (end.lng - start.lng) * (i / steps);
+                latlngs.push([lat, lng]);
+
+                if (currentRoute) map.removeLayer(currentRoute);
+                currentRoute = L.polyline(latlngs, {color: "gold"}).addTo(map);
+
+                if (i < steps) {
+                    requestAnimationFrame(animateLine);
+                }
+            }
+            animateLine();
+        });
+    });
+
+    var currentRoute = null;
+
+    // Add default layers
+    venetianLayer.addTo(map);
+    byzantineLayer.addTo(map);
+
+    // Layer control
+    L.control.layers(null, {
+        "Venetian Republic": venetianLayer,
+        "Byzantine Empire": byzantineLayer,
+    }).addTo(map);
+
+    // ========================
+    // Story popups
+    // ========================
+    var storySteps = [
+        {
+            coords: [45.4408, 12.3155],
+            content: `<div class='popup-content'>
+                        <b>Ready to explore Venetian trading routes?</b><br>
+                        Step into a world of adventure, faith, and ambition—where spices, silks, and sacred relics sailed from Alexandria and Constantinople to Venice. Follow their journeys and discover how the city became a treasure trove of history.<br>
+                        <div class='popup-buttons'>
+                            <button onclick='nextPopup()'>Next</button>
+                            <button onclick='toggleSpeech(this)'>Play</button>
+                        </div>
+                      </div>`
+        },
+        {
+            coords: [45.4408, 12.3155],
+            content: `<div class='popup-content'>
+                        <b>Building an Empire</b><br>
+                        In the 14th and 15th centuries, Venice ruled the waves. Stretching along the Adriatic and reaching into Greece, Crete, and Cyprus, Venice wasn’t just a city—it was a maritime powerhouse. Palaces, ports, and fleets dotted the Mediterranean, and every canal in Venice hummed with trade, diplomacy, and intrigue.<br>
+                        <div class='popup-buttons'>
+                            <button onclick='nextPopup()'>Next</button>
+                            <button onclick='toggleSpeech(this)'>Play</button>
+                        </div>
+                      </div>`
+        },
+        {
+            coords: [31.2001, 29.9187],
+            content: `<div class='popup-content'>
+                        <b>Key Trade Routes to the East</b><br>
+                        Spices, silks, and rare papyrus sailed from Alexandria’s bustling ports to Venice. Aromatic cinnamon, vibrant dyes, and delicate textiles carried tales of distant lands—and made Venetian markets sparkle with the exotic. Every crate tells a story of adventure, trade, and discovery.<br>
+                        <div class='popup-buttons'>
+                            <button onclick='nextPopup()'>Next</button>
+                            <button onclick='toggleSpeech(this)'>Play</button>
+                        </div>
+                      </div>`
+        },
+        {
+            coords: [41.0082, 28.9784],
+            content: `<div class='popup-content'>
+                        <b>The City of Treasures</b><br>
+                        Fast forward a few centuries: Venice joins the Fourth Crusade, and suddenly the city is raining treasures. Golden icons, mosaics, and marble columns make the long trip from Constantinople to Venice. It’s like Venice got the ultimate medieval IKEA delivery—only instead of furniture, it’s priceless relics and sparkling Byzantine art.<br>
+                        <div class='popup-buttons'>
+                            <button onclick='nextPopup()'>Next</button>
+                            <button onclick='toggleSpeech(this)'>Play</button>
+                        </div>
+                      </div>`
+        },
+        {
+            coords: [45.4408, 12.3155],
+            content: `<div class='popup-content'>
+                        <b>Where Treasures Landed</b><br>
+                        Venice’s canals brimmed with relics, spices, silks, and treasures, turning the city into a lively hub of wealth, culture, and adventure.
+                        But this is just the beginning—click on the pins to dive deeper, discover what Venice traded, and follow the fascinating stories of merchants, voyages, and treasures across the Mediterranean. <br>
+                        <div class='popup-buttons'>
+                            <button onclick='nextPopup()'>End</button>
+                            <button onclick='toggleSpeech(this)'>Play</button>
+                        </div>
+                      </div>`
+        }
+    ];
+
+    var currentStep = 0;
+    var currentPopup;
+
+    function nextPopup() {
+        if(currentPopup) map.closePopup(currentPopup);
+
+        if(currentStep < storySteps.length) {
+            var step = storySteps[currentStep];
+            map.flyTo(step.coords, 7, {animate: true, duration: 2});
+            setTimeout(function() {
+                currentPopup = L.popup({maxWidth: 300})
+                    .setLatLng(step.coords)
+                    .setContent(step.content)
+                    .openOn(map);
+            }, 2000);
+            currentStep++;
+        }
+    }
+
 // ========================
-// Better Web Speech Setup
+// Voice Loader & Selection
 // ========================
-let voices = [];
-let preferredVoiceNames = [
-    "Samantha",                  // iOS Safari English (US)
-    "Google US English",         // Chrome
-    "Google UK English Female",  // Chrome alt
-    "Microsoft Zira Desktop - English (United States)",
-    "Microsoft David Desktop - English (United States)"
+var voices = [];
+var preferredVoiceNames = [
+  "Samantha", // iOS English (US) female
+  "Alex",     // iOS English (US) male
+  "Google US English",
+  "Google UK English Female",
+  "Google UK English Male",
+  "Microsoft David Desktop - English (United States)",
+  "Microsoft Zira Desktop - English (United States)"
 ];
 
 function loadVoices() {
-    voices = window.speechSynthesis.getVoices();
-    if (voices.length === 0) {
-        // Retry until voices are ready
-        setTimeout(loadVoices, 200);
-        return;
-    }
-    console.log("Voices loaded:", voices.map(v => v.name + " (" + v.lang + ")"));
-}
-window.speechSynthesis.onvoiceschanged = loadVoices;
-loadVoices();
+  voices = window.speechSynthesis.getVoices();
 
-let currentUtterance = null;
+  // Retry until voices are loaded
+  if (voices.length === 0) {
+    setTimeout(loadVoices, 200);
+    return;
+  }
+
+  console.log("Available voices:", voices.map(v => v.name + " (" + v.lang + ")"));
+}
+
+loadVoices();
+window.speechSynthesis.onvoiceschanged = loadVoices;
+
+// ========================
+// Text-to-Speech Function
+// ========================
+var currentUtterance = null;
 
 function toggleSpeech(button) {
-    if (currentUtterance && window.speechSynthesis.speaking) {
-        window.speechSynthesis.cancel();
-        button.textContent = "Play";
-        currentUtterance = null;
-        return;
-    }
+  if (currentUtterance && window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    button.textContent = "Play";
+    currentUtterance = null;
+    return;
+  }
 
-    // Get popup text
-    let popupContent = button.closest('.popup-content').innerText
-        .replace("Play", "")
-        .replace("Next", "")
-        .replace("End", "")
-        .trim();
+  var popupContent = button.closest('.popup-content').innerText
+    .replace("Play", "")
+    .replace("Next", "")
+    .replace("End", "")
+    .trim();
 
-    if (!popupContent) return;
+  if (!popupContent) return;
 
-    currentUtterance = new SpeechSynthesisUtterance(popupContent);
+  currentUtterance = new SpeechSynthesisUtterance(popupContent);
 
-    // Force English voice if possible
-    if (voices.length > 0) {
-        let voice = voices.find(v => preferredVoiceNames.includes(v.name));
-        if (!voice) {
-            // fallback: pick the first English voice found
-            voice = voices.find(v => v.lang.startsWith("en"));
-        }
-        if (voice) currentUtterance.voice = voice;
-    }
+  // Try to pick a preferred English voice
+  let voice =
+    voices.find(v => preferredVoiceNames.includes(v.name)) ||
+    voices.find(v => v.lang.startsWith("en")) || // any English voice
+    voices[0]; // fallback
 
-    // Natural adjustments
-    currentUtterance.rate = 0.9;     // slightly slower
-    currentUtterance.pitch = 1.0;    // normal pitch (avoid robot feel)
-    currentUtterance.volume = 1.0;   // full volume
+  if (voice) {
+    currentUtterance.voice = voice;
+  }
 
-    // Add small pauses for commas/periods
-    currentUtterance.text = popupContent.replace(/,/g, ", ").replace(/\./g, ". ");
+  currentUtterance.rate = 0.95;
+  currentUtterance.pitch = 1.05;
+  currentUtterance.volume = 1;
 
-    // Start speaking
-    window.speechSynthesis.speak(currentUtterance);
-    button.textContent = "Pause";
+  window.speechSynthesis.speak(currentUtterance);
+  button.textContent = "Pause";
 
-    currentUtterance.onend = () => {
-        button.textContent = "Play";
-        currentUtterance = null;
-    };
+  currentUtterance.onend = function () {
+    button.textContent = "Play";
+    currentUtterance = null;
+  };
 }
+
+    // Start the story at Venice
+    window.onload = function() {
+        nextPopup();
+    };
+</script>
+</body>
+</html>
