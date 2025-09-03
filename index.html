@@ -207,12 +207,24 @@ function toggleSpeech(button) {
         currentUtterance = null;
     } else {
         var popupContent = button.closest('.popup-content').innerText
-            .replace("Play", "")
-            .replace("Next", "")
-            .replace("End", "")
+            .replace("Play","")
+            .replace("Next","")
+            .replace("End","")
             .trim();
 
         currentUtterance = new SpeechSynthesisUtterance(popupContent);
+
+        // Pick a good voice (Google voices tend to be smoother if available)
+        if (voices.length > 0) {
+            currentUtterance.voice = voices.find(v => v.lang === "en-US" && v.name.includes("Google")) 
+                                  || voices[0];
+        }
+
+        // Adjust delivery
+        currentUtterance.rate = 0.95;   // slower pace
+        currentUtterance.pitch = 1.05;  // slight pitch variation
+        currentUtterance.volume = 1;
+
         window.speechSynthesis.speak(currentUtterance);
         button.textContent = "Pause";
 
