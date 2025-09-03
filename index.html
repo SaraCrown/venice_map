@@ -43,7 +43,6 @@
     // Layer groups
     var venetianLayer = L.layerGroup();
     var byzantineLayer = L.layerGroup();
-    var tradeRoutesLayer = L.layerGroup();
 
     // Venetian Republic Polygon
    var venetianPolygon = L.polygon([
@@ -90,24 +89,15 @@
     venetianLayer.addLayer(antioch);
     venetianLayer.addLayer(trebizond);
 
-    // Trade routes
-    var route1 = L.polyline([[45.4408, 12.3155],[41.0082, 28.9784]], {color:'orange'}).bindPopup("Trade route: Venice → Constantinople");
-    var route2 = L.polyline([[45.4408, 12.3155],[35.3387, 25.1442]], {color:'orange'}).bindPopup("Trade route: Venice → Crete");
-    var route3 = L.polyline([[35.3387, 25.1442],[31.2001, 29.9187]], {color:'orange'}).bindPopup("Trade route: Crete → Alexandria");
-    tradeRoutesLayer.addLayer(route1);
-    tradeRoutesLayer.addLayer(route2);
-    tradeRoutesLayer.addLayer(route3);
 
     // Add default layers
     venetianLayer.addTo(map);
     byzantineLayer.addTo(map);
-    tradeRoutesLayer.addTo(map);
 
     // Layer control
     L.control.layers(null, {
         "Venetian Republic": venetianLayer,
         "Byzantine Empire": byzantineLayer,
-        "Trade Routes": tradeRoutesLayer
     }).addTo(map);
 
     // Story popups
@@ -160,7 +150,8 @@ var storySteps = [
         coords: [45.4408, 12.3155],
         content: `<div class='popup-content'>
                     <b>Where Treasures Landed</b><br>
-                    The journey ends here, in the canals of Venice. Relics, spices, silks, and art transformed the city into a hub of wealth, faith, and culture. St. Mark’s Basilica glitters with Byzantine icons and mosaics, each a testament to the daring voyages and bold ambition that made Venice the “Queen of the Adriatic“.<br>
+                    Venice’s canals brimmed with relics, spices, silks, and treasures, turning the city into a lively hub of wealth, culture, and adventure.
+But this is just the beginning—click on the pins to dive deeper, discover what Venice traded, and follow the fascinating stories of merchants, voyages, and treasures across the Mediterranean. <br>
                     <div class='popup-buttons'>
                         <button onclick='nextPopup()'>End</button>
                         <button onclick='toggleSpeech(this)'>Play</button>
