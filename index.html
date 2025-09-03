@@ -70,11 +70,25 @@
     var constantinople = L.marker([41.0082, 28.9784]).bindPopup("<b>Constantinople</b><br>The gateway to the East. After 1204, many mosaics, relics, and the Horses of St. Mark arrived here.");
     var crete = L.marker([35.3387, 25.1442]).bindPopup("<b>Crete</b><br>Venice’s prized colony — source of food, wine, and culture.");
     var alexandria = L.marker([31.2001, 29.9187]).bindPopup("<b>Alexandria</b><br>Where St. Mark's relics began their journey to Venice.");
+    var corfu = L.marker([39.6243, 19.9217]).bindPopup("<b>Corfu</b><br>Venice’s first foothold in the Ionian Sea—fortress island and key supply stop.");
+    var cyprus = L.marker([35.1856, 33.3823]).bindPopup("<b>Cyprus</b><br>Linked Venice to Levantine trade routes, supplying sugar, timber, and spices.");
+    var ragusa = L.marker([42.6507, 18.0944]).bindPopup("<b>Ragusa (Dubrovnik)</b><br>A thriving rival republic trading Balkan silver, salt, and grain.");
+    var modon = L.marker([36.8186, 21.7046]).bindPopup("<b>Modon</b><br>‘The Eye of the Republic,’ Venice’s fortress guarding the route to Alexandria and Constantinople.");
+    var negroponte = L.marker([38.4634, 23.6025]).bindPopup("<b>Negroponte (Chalkis)</b><br>A Venetian stronghold controlling Aegean trade and access to the Black Sea.");
+    var antioch = L.marker([36.2021, 36.1600]).bindPopup("<b>Antioch</b><br>Gateway to Eastern goods, where silks and spices entered Mediterranean markets.");
+    var trebizond = L.marker([41.0053, 39.7220]).bindPopup("<b>Trebizond</b><br>Silks and spices from Asia ended their journey here before Venetian merchants carried them west.");
 
     venetianLayer.addLayer(venice);
     venetianLayer.addLayer(constantinople);
     venetianLayer.addLayer(crete);
     venetianLayer.addLayer(alexandria);
+    venetianLayer.addLayer(corfu);
+    venetianLayer.addLayer(cyprus);
+    venetianLayer.addLayer(ragusa);
+    venetianLayer.addLayer(modon);
+    venetianLayer.addLayer(negroponte);
+    venetianLayer.addLayer(antioch);
+    venetianLayer.addLayer(trebizond);
 
     // Trade routes
     var route1 = L.polyline([[45.4408, 12.3155],[41.0082, 28.9784]], {color:'orange'}).bindPopup("Trade route: Venice → Constantinople");
