@@ -31,26 +31,26 @@
 <style>
 #top-banner {
     position: fixed;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 0;
+    left: 0;
+    width: 100%;               /* stretch across full width */
     text-align: center;
-    z-index: 10000;           /* stays above map */
+    z-index: 10000;            /* stays above map */
     background: rgba(87, 78, 160, 0.95); /* purple with slight transparency */
-    padding: 10px 20px;
-    border-radius: 8px;
+    padding: 10px 0;           /* vertical padding only */
     font-family: Arial, sans-serif;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3); /* optional shadow */
 }
 
 #top-banner .banner-logo {
     max-height: 80px;
     display: block;
-    margin: 0 auto 8px auto;
+    margin: 0 auto 8px auto;   /* center logo */
 }
 
 #top-banner .banner-text {
     font-size: 16px;
-    color: white;             /* white text */
+    color: white;              /* white text */
     font-weight: bold;
     line-height: 1.4;
 }
