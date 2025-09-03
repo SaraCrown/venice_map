@@ -183,23 +183,32 @@ var storySteps = [
             currentStep++;
         }
     }
-   // Text-to-speech control
-    var currentUtterance = null;
+// Text-to-speech control
+var currentUtterance = null;
 
-    function toggleSpeech(button) {
-        if (currentUtterance && window.speechSynthesis.speaking) {
-            window.speechSynthesis.cancel();
+function toggleSpeech(button) {
+    if (currentUtterance && window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        button.textContent = "Play";
+        currentUtterance = null;
+    } else {
+        var popupContent = button.closest('.popup-content').innerText
+            .replace("Play", "")
+            .replace("Next", "")
+            .replace("End", "")
+            .trim();
+
+        currentUtterance = new SpeechSynthesisUtterance(popupContent);
+        window.speechSynthesis.speak(currentUtterance);
+        button.textContent = "Pause";
+
+        currentUtterance.onend = function() {
             button.textContent = "Play";
             currentUtterance = null;
-        } else {
-            var popupContent = button.closest('.popup-content').innerText.replace("Play","").replace("Next","").replace("End","").trim();
-            currentUtterance = new SpeechSynthesisUtterance(popupContent);
-            window.speechSynthesis.speak(currentUtterance);
-            button.textContent = "Pause";
-            currentUtterance.onend = function() {
-                button.textContent = "Play";
-                currentUtterance = null;
+        };
     }
+}
+    
     // Start the story at Venice
     window.onload = function() {
         nextPopup();
