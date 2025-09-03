@@ -197,6 +197,13 @@ var storySteps = [
             currentStep++;
         }
     }
+// Store available voices
+var voices = [];
+function loadVoices() {
+    voices = window.speechSynthesis.getVoices();
+}
+window.speechSynthesis.onvoiceschanged = loadVoices;
+
 // Text-to-speech control
 var currentUtterance = null;
 
@@ -214,14 +221,14 @@ function toggleSpeech(button) {
 
         currentUtterance = new SpeechSynthesisUtterance(popupContent);
 
-        // Pick a good voice (Google voices tend to be smoother if available)
+        // Pick a good voice (Google voices are usually smoother if available)
         if (voices.length > 0) {
-            currentUtterance.voice = voices.find(v => v.lang === "en-US" && v.name.includes("Google")) 
-                                  || voices[0];
+            currentUtterance.voice = voices.find(v => v.lang === "en-US" && v.name.includes("Google"))
+                                   || voices[0];
         }
 
-        // Adjust delivery
-        currentUtterance.rate = 0.95;   // slower pace
+        // Make it sound more natural
+        currentUtterance.rate = 0.95;   // slightly slower
         currentUtterance.pitch = 1.05;  // slight pitch variation
         currentUtterance.volume = 1;
 
@@ -234,7 +241,6 @@ function toggleSpeech(button) {
         };
     }
 }
-    
     // Start the story at Venice
     window.onload = function() {
         nextPopup();
