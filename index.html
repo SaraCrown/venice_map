@@ -279,7 +279,7 @@ loadVoices();
 window.speechSynthesis.onvoiceschanged = loadVoices;
 
 // ========================
-// Text-to-Speech Function (Natural Intonation)
+// Text-to-Speech Function (Natural Sentence Variation)
 // ========================
 var currentUtterance = null;
 
@@ -302,37 +302,28 @@ function toggleSpeech(button) {
   const synth = window.speechSynthesis;
   const sentences = popupContent.split(/([.!?])/).filter(Boolean);
 
-  let delay = 0;
-
-  // Speak each sentence word-by-word with natural variation
   sentences.forEach(sentence => {
-    const words = sentence.trim().split(' ');
+    const utterance = new SpeechSynthesisUtterance(sentence.trim());
 
-    words.forEach(word => {
-      const utterance = new SpeechSynthesisUtterance(word + ' ');
+    // Slight variation per sentence for naturalness
+    utterance.rate = 0.9 + Math.random() * 0.15;   // 0.9–1.05
+    utterance.pitch = 0.98 + Math.random() * 0.05; // 0.98–1.03
+    utterance.volume = 1;
 
-      // Slight variation per word for naturalness
-      utterance.rate = 0.9 + Math.random() * 0.15;   // 0.9–1.05
-      utterance.pitch = 0.95 + Math.random() * 0.15; // 0.95–1.1
-      utterance.volume = 1;
+    // Try to pick a preferred English voice
+    let voice =
+      voices.find(v => preferredVoiceNames.includes(v.name)) ||
+      voices.find(v => v.lang.startsWith("en")) ||
+      voices[0];
 
-      // Try to pick a preferred English voice
-      let voice =
-        voices.find(v => preferredVoiceNames.includes(v.name)) ||
-        voices.find(v => v.lang.startsWith("en")) ||
-        voices[0];
+    if (voice) {
+      utterance.voice = voice;
+    }
 
-      if (voice) {
-        utterance.voice = voice;
-      }
-
-      // Queue each word with a slight delay to avoid overlapping
-      setTimeout(() => synth.speak(utterance), delay);
-      delay += 120; // adjust spacing between words (ms)
-    });
+    synth.speak(utterance);
   });
 
-  currentUtterance = true; // placeholder to indicate speaking
+  currentUtterance = true; // flag to indicate speaking
   button.textContent = "Pause";
 
   // Polling to reset button when done
@@ -344,7 +335,6 @@ function toggleSpeech(button) {
     }
   }, 200);
 }
-
     // Start the story at Venice
     window.onload = function() {
         nextPopup();
