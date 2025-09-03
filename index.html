@@ -140,33 +140,49 @@ var pins = [
 
 venetianLayer.addLayer(venice);
 
-pins.forEach(pin => {
-    venetianLayer.addLayer(pin);
+pin.on("click", function() {
+    if (currentRoute) map.removeLayer(currentRoute);
 
-    pin.on("click", function() {
+    var start = pin.getLatLng();
+    var end = venice.getLatLng();
+    var latlngs = [start];
+
+    var steps = 100;
+    var i = 0;
+    var dashOffset = 0;
+
+    function animateLine() {
+        i++;
+        var lat = start.lat + (end.lat - start.lat) * (i / steps);
+        var lng = start.lng + (end.lng - start.lng) * (i / steps);
+        latlngs.push([lat, lng]);
+
         if (currentRoute) map.removeLayer(currentRoute);
 
-        var start = pin.getLatLng();
-        var end = venice.getLatLng();
-        var latlngs = [start];
+        currentRoute = L.polyline(latlngs, {
+            color: "#DABC38",   // route color
+            weight: 3,
+            dashArray: "12, 8", // longer dashes for visibility
+            dashOffset: dashOffset
+        }).addTo(map);
 
-        var steps = 100;
-        var i = 0;
-        function animateLine() {
-            i++;
-            var lat = start.lat + (end.lat - start.lat) * (i / steps);
-            var lng = start.lng + (end.lng - start.lng) * (i / steps);
-            latlngs.push([lat, lng]);
+        dashOffset -= 1; // move dashes along the line
 
-            if (currentRoute) map.removeLayer(currentRoute);
-            currentRoute = L.polyline(latlngs, {color: "#DABC38"}).addTo(map);
-
-            if (i < steps) {
-                requestAnimationFrame(animateLine);
+        if (i < steps) {
+            requestAnimationFrame(animateLine);
+        } else {
+            // After the line is drawn, animate the dash to create a pulsing flow
+            let pulseDirection = -1; // forward
+            function pulse() {
+                dashOffset += pulseDirection * 0.8; // slow, smooth movement
+                currentRoute.setStyle({ dashOffset: dashOffset });
+                requestAnimationFrame(pulse);
             }
+            pulse();
         }
-        animateLine();
-    });
+    }
+
+    animateLine();
 });
 
 var currentRoute = null;
