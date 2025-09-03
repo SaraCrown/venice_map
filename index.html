@@ -120,7 +120,31 @@ var pins = [
 // Add Venice marker
 venetianLayer.addLayer(venice);
 
-// Add other pins and animation
+// Function to calculate distance between two points (simple Euclidean approximation)
+function distance(latlng1, latlng2) {
+    let dx = latlng1.lat - latlng2.lat;
+    let dy = latlng1.lng - latlng2.lng;
+    return Math.sqrt(dx*dx + dy*dy);
+}
+
+// Generate Bezier curve with dynamic height based on distance
+function generateBezier(start, end, steps = 80) {
+    let dist = distance(start, end);
+    let height = Math.min(Math.max(dist * 5, 1), 10); // height between 1 and 10 degrees
+    let points = [];
+    let midLat = (start.lat + end.lat) / 2 + height;
+    let midLng = (start.lng + end.lng) / 2;
+
+    for (let t = 0; t <= 1; t += 1 / steps) {
+        let easedT = 0.5 - 0.5 * Math.cos(Math.PI * t); // smooth easing
+        let lat = (1 - easedT) * (1 - easedT) * start.lat + 2 * (1 - easedT) * easedT * midLat + easedT * easedT * end.lat;
+        let lng = (1 - easedT) * (1 - easedT) * start.lng + 2 * (1 - easedT) * easedT * midLng + easedT * easedT * end.lng;
+        points.push([lat, lng]);
+    }
+    return points;
+}
+
+// Add pins and animate route
 pins.forEach(function(p) {
     venetianLayer.addLayer(p.marker);
 
@@ -128,35 +152,26 @@ pins.forEach(function(p) {
         var startCoords = p.marker.getLatLng();
         var veniceCoords = venice.getLatLng();
 
-        // Remove previous animated route if exists
+        // Remove previous route if exists
         if (window.currentRoute) {
             map.removeLayer(window.currentRoute);
         }
 
-        // Generate simple line points for animation
-        var steps = 50;
-        var latStep = (veniceCoords.lat - startCoords.lat) / steps;
-        var lngStep = (veniceCoords.lng - startCoords.lng) / steps;
-        var lineCoords = [startCoords];
-        var stepCount = 0;
-
-        var animatedLine = L.polyline([startCoords], { color: 'orange', weight: 4 }).addTo(map);
+        var bezierPoints = generateBezier(startCoords, veniceCoords, 80);
+        var currentStep = 1;
+        var animatedLine = L.polyline([bezierPoints[0]], { color: 'orange', weight: 4 }).addTo(map);
 
         var interval = setInterval(function() {
-            stepCount++;
-            if (stepCount > steps) {
+            currentStep++;
+            if (currentStep > bezierPoints.length) {
                 clearInterval(interval);
-                window.currentRoute = animatedLine; // save reference
+                window.currentRoute = animatedLine; // save reference for next click
             } else {
-                var nextLat = startCoords.lat + latStep * stepCount;
-                var nextLng = startCoords.lng + lngStep * stepCount;
-                lineCoords.push([nextLat, nextLng]);
-                animatedLine.setLatLngs(lineCoords);
+                animatedLine.setLatLngs(bezierPoints.slice(0, currentStep));
             }
-        }, 15); // animation speed
+        }, 15); // speed of animation
     });
 });
-
 
     // Add default layers
     venetianLayer.addTo(map);
