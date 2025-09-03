@@ -124,6 +124,7 @@ function createPin(lat, lng, popupContent) {
 
 // Venice marker
 var venice = createPin(45.4408, 12.3155, "<b>Venice</b><br>The Queen of the Adriatic, hub of merchants and faith. Treasures and relics flowed to St. Mark’s.");
+venetianLayer.addLayer(venice);
 
 var pins = [
     createPin(41.0082, 28.9784, "<b>Constantinople</b><br>The gateway to the East. After 1204, many mosaics, relics, and the Horses of St. Mark arrived here."),
@@ -138,51 +139,53 @@ var pins = [
     createPin(41.0053, 39.7220, "<b>Trebizond</b><br>Trebizond, the last Byzantine outpost on the Silk Road, funneled silks and spices from Asia into Venetian markets.")
 ];
 
-venetianLayer.addLayer(venice);
+// Add pins and attach click handlers
+pins.forEach(function(pin) {
+    venetianLayer.addLayer(pin);
 
-pin.on("click", function() {
-    if (currentRoute) map.removeLayer(currentRoute);
-
-    var start = pin.getLatLng();
-    var end = venice.getLatLng();
-    var latlngs = [start];
-
-    var steps = 100;
-    var i = 0;
-    var dashOffset = 0;
-
-    function animateLine() {
-        i++;
-        var lat = start.lat + (end.lat - start.lat) * (i / steps);
-        var lng = start.lng + (end.lng - start.lng) * (i / steps);
-        latlngs.push([lat, lng]);
-
+    pin.on("click", function() {
         if (currentRoute) map.removeLayer(currentRoute);
 
-        currentRoute = L.polyline(latlngs, {
-            color: "#DABC38",   // route color
-            weight: 3,
-            dashArray: "12, 8", // longer dashes for visibility
-            dashOffset: dashOffset
-        }).addTo(map);
+        var start = pin.getLatLng();
+        var end = venice.getLatLng();
+        var latlngs = [start];
 
-        dashOffset -= 1; // move dashes along the line
+        var steps = 100;
+        var i = 0;
+        var dashOffset = 0;
 
-        if (i < steps) {
-            requestAnimationFrame(animateLine);
-        } else {
-            // After the line is drawn, animate the dash to create a pulsing flow
-            let pulseDirection = -1; // forward
-            function pulse() {
-                dashOffset += pulseDirection * 0.8; // slow, smooth movement
-                currentRoute.setStyle({ dashOffset: dashOffset });
-                requestAnimationFrame(pulse);
+        function animateLine() {
+            i++;
+            var lat = start.lat + (end.lat - start.lat) * (i / steps);
+            var lng = start.lng + (end.lng - start.lng) * (i / steps);
+            latlngs.push([lat, lng]);
+
+            if (currentRoute) map.removeLayer(currentRoute);
+
+            currentRoute = L.polyline(latlngs, {
+                color: "#DABC38",
+                weight: 3,
+                dashArray: "12, 8",
+                dashOffset: dashOffset
+            }).addTo(map);
+
+            dashOffset -= 1;
+
+            if (i < steps) {
+                requestAnimationFrame(animateLine);
+            } else {
+                // Pulsing flow along the route
+                function pulse() {
+                    dashOffset -= 0.8;
+                    currentRoute.setStyle({ dashOffset: dashOffset });
+                    requestAnimationFrame(pulse);
+                }
+                pulse();
             }
-            pulse();
         }
-    }
 
-    animateLine();
+        animateLine();
+    });
 });
 
 var currentRoute = null;
